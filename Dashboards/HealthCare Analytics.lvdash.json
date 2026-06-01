@@ -1,0 +1,3068 @@
+{
+  "datasets": [
+    {
+      "name": "0de99b00",
+      "displayName": "fact_encounter",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.fact_encounter",
+        "dimensions": [
+          {
+            "name": "encounter_key",
+            "expr": "source.encounter_key",
+            "displayName": "Encounter Key"
+          },
+          {
+            "name": "patient_key",
+            "expr": "source.patient_key",
+            "displayName": "Patient Key"
+          },
+          {
+            "name": "date_key",
+            "expr": "source.date_key",
+            "displayName": "Date Key"
+          },
+          {
+            "name": "encounter_type",
+            "expr": "source.encounter_type",
+            "displayName": "Encounter Type"
+          },
+          {
+            "name": "encounter_count",
+            "expr": "source.encounter_count",
+            "displayName": "Encounter Count"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "9a406474",
+      "displayName": "dim_condition",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.dim_condition",
+        "dimensions": [
+          {
+            "name": "condition_key",
+            "expr": "source.condition_key",
+            "displayName": "Condition Key"
+          },
+          {
+            "name": "condition_code",
+            "expr": "source.condition_code",
+            "displayName": "Condition Code"
+          },
+          {
+            "name": "condition_description",
+            "expr": "source.condition_description",
+            "displayName": "Condition Description"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "89b7d015",
+      "displayName": "dim_date",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.dim_date",
+        "dimensions": [
+          {
+            "name": "date_key",
+            "expr": "source.date_key",
+            "displayName": "Date Key"
+          },
+          {
+            "name": "date",
+            "expr": "source.date",
+            "displayName": "Date"
+          },
+          {
+            "name": "year",
+            "expr": "source.year",
+            "displayName": "Year"
+          },
+          {
+            "name": "month_name",
+            "expr": "source.month_name",
+            "displayName": "Month Name"
+          },
+          {
+            "name": "quarter",
+            "expr": "source.quarter",
+            "displayName": "Quarter"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "61ba6bf5",
+      "displayName": "dim_patient",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.dim_patient",
+        "dimensions": [
+          {
+            "name": "patient_key",
+            "expr": "source.patient_key",
+            "displayName": "Patient Key"
+          },
+          {
+            "name": "gender",
+            "expr": "source.gender",
+            "displayName": "Gender"
+          },
+          {
+            "name": "dob",
+            "expr": "source.dob",
+            "displayName": "Dob"
+          },
+          {
+            "name": "age",
+            "expr": "source.age",
+            "displayName": "Age"
+          },
+          {
+            "name": "city",
+            "expr": "source.city",
+            "displayName": "City"
+          },
+          {
+            "name": "state",
+            "expr": "source.state",
+            "displayName": "State"
+          },
+          {
+            "name": "is_deceased",
+            "expr": "source.is_deceased",
+            "displayName": "Is Deceased"
+          },
+          {
+            "name": "age_group",
+            "expr": "source.age_group",
+            "displayName": "Age Group"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          },
+          {
+            "name": "avg_age",
+            "expr": "AVG(source.age)",
+            "displayName": "Average Age",
+            "comment": "Average age of patients"
+          },
+          {
+            "name": "deceased_count",
+            "expr": "SUM(source.is_deceased)",
+            "displayName": "Deceased Patients",
+            "comment": "Number of deceased patients"
+          }
+        ]
+      }
+    },
+    {
+      "name": "535343a9",
+      "displayName": "Top Cities Ranked by Patient Volume Summary",
+      "queryLines": [
+        "select city, count(*) as patient_count\n",
+        "from dim_patient\n",
+        "group by city\n",
+        "order by patient_count desc\n",
+        "limit 10"
+      ],
+      "catalog": "workspace",
+      "schema": "gold"
+    },
+    {
+      "name": "top_patients_visits",
+      "displayName": "Top Patients by Visit Count",
+      "queryLines": [
+        "SELECT\n",
+        "  e.patient_key,\n",
+        "  p.gender,\n",
+        "  p.age,\n",
+        "  p.city,\n",
+        "  COUNT(*) as visit_count\n",
+        "FROM\n",
+        "  workspace.gold.fact_encounter e\n",
+        "    INNER JOIN workspace.gold.dim_patient p\n",
+        "      ON e.patient_key = p.patient_key\n",
+        "GROUP BY\n",
+        "  e.patient_key,\n",
+        "  p.gender,\n",
+        "  p.age,\n",
+        "  p.city\n",
+        "ORDER BY\n",
+        "  visit_count DESC\n",
+        "LIMIT 10"
+      ]
+    },
+    {
+      "name": "encounters_by_year",
+      "displayName": "Encounters by Year",
+      "config": {
+        "version": "1.1",
+        "source": "SELECT \n  e.encounter_key,\n  e.patient_key,\n  e.encounter_type,\n  d.year,\n  d.month_name,\n  d.quarter\nFROM workspace.gold.fact_encounter e INNER JOIN workspace.gold.dim_date d ON e.date_key = d.date_key WHERE d.year >= 2010\n",
+        "dimensions": [
+          {
+            "name": "year",
+            "expr": "year",
+            "displayName": "Year"
+          },
+          {
+            "name": "month_name",
+            "expr": "month_name",
+            "displayName": "Month"
+          },
+          {
+            "name": "quarter",
+            "expr": "quarter",
+            "displayName": "Quarter"
+          },
+          {
+            "name": "encounter_type",
+            "expr": "encounter_type",
+            "displayName": "Encounter Type"
+          }
+        ],
+        "measures": [
+          {
+            "name": "encounter_count",
+            "expr": "COUNT(*)",
+            "displayName": "Total Encounters",
+            "comment": "Count of all encounters"
+          }
+        ]
+      }
+    },
+    {
+      "name": "monthly_encounters",
+      "displayName": "Monthly Encounter Trends",
+      "config": {
+        "version": "1.1",
+        "source": "SELECT \n  e.encounter_key,\n  d.month_name,\n  d.year\nFROM workspace.gold.fact_encounter e INNER JOIN workspace.gold.dim_date d ON e.date_key = d.date_key WHERE d.year >= 2010\n",
+        "dimensions": [
+          {
+            "name": "month_name",
+            "expr": "month_name",
+            "displayName": "Month"
+          },
+          {
+            "name": "year",
+            "expr": "year",
+            "displayName": "Year"
+          }
+        ],
+        "measures": [
+          {
+            "name": "encounter_count",
+            "expr": "COUNT(*)",
+            "displayName": "Total Encounters",
+            "comment": "Count of encounters by month"
+          }
+        ]
+      }
+    },
+    {
+      "name": "top_conditions",
+      "displayName": "Top Medical Conditions",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.dim_condition",
+        "dimensions": [
+          {
+            "name": "condition_description",
+            "expr": "source.condition_description",
+            "displayName": "Condition"
+          },
+          {
+            "name": "condition_code",
+            "expr": "source.condition_code",
+            "displayName": "Code"
+          }
+        ],
+        "measures": [
+          {
+            "name": "condition_count",
+            "expr": "COUNT(*)",
+            "displayName": "Total Cases",
+            "comment": "Count of condition records"
+          }
+        ]
+      }
+    },
+    {
+      "name": "d869b326",
+      "displayName": "gold_population_health",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_population_health",
+        "dimensions": [
+          {
+            "name": "encounter_key",
+            "expr": "source.encounter_key",
+            "displayName": "Encounter Key"
+          },
+          {
+            "name": "patient_key",
+            "expr": "source.patient_key",
+            "displayName": "Patient Key"
+          },
+          {
+            "name": "date_key",
+            "expr": "source.date_key",
+            "displayName": "Date Key"
+          },
+          {
+            "name": "encounter_type",
+            "expr": "source.encounter_type",
+            "displayName": "Encounter Type"
+          },
+          {
+            "name": "encounter_count",
+            "expr": "source.encounter_count",
+            "displayName": "Encounter Count"
+          },
+          {
+            "name": "gender",
+            "expr": "source.gender",
+            "displayName": "Gender"
+          },
+          {
+            "name": "age",
+            "expr": "source.age",
+            "displayName": "Age"
+          },
+          {
+            "name": "age_group",
+            "expr": "source.age_group",
+            "displayName": "Age Group"
+          },
+          {
+            "name": "city",
+            "expr": "source.city",
+            "displayName": "City"
+          },
+          {
+            "name": "state",
+            "expr": "source.state",
+            "displayName": "State"
+          },
+          {
+            "name": "is_deceased",
+            "expr": "source.is_deceased",
+            "displayName": "Is Deceased"
+          },
+          {
+            "name": "date",
+            "expr": "source.date",
+            "displayName": "Date"
+          },
+          {
+            "name": "year",
+            "expr": "source.year",
+            "displayName": "Year"
+          },
+          {
+            "name": "month_name",
+            "expr": "source.month_name",
+            "displayName": "Month Name"
+          },
+          {
+            "name": "quarter",
+            "expr": "source.quarter",
+            "displayName": "Quarter"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "012011af",
+      "displayName": "fact_patient_conditions",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.fact_patient_conditions",
+        "dimensions": [
+          {
+            "name": "patient_key",
+            "expr": "source.patient_key",
+            "displayName": "Patient Key"
+          },
+          {
+            "name": "condition_key",
+            "expr": "source.condition_key",
+            "displayName": "Condition Key"
+          },
+          {
+            "name": "date_key",
+            "expr": "source.date_key",
+            "displayName": "Date Key"
+          },
+          {
+            "name": "clinical_status",
+            "expr": "source.clinical_status",
+            "displayName": "Clinical Status"
+          },
+          {
+            "name": "condition_count",
+            "expr": "source.condition_count",
+            "displayName": "Condition Count"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "3d0b7fd1",
+      "displayName": "gold_clinical_analytics",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_clinical_analytics",
+        "dimensions": [
+          {
+            "name": "patient_key",
+            "expr": "source.patient_key",
+            "displayName": "Patient Key"
+          },
+          {
+            "name": "condition_key",
+            "expr": "source.condition_key",
+            "displayName": "Condition Key"
+          },
+          {
+            "name": "date_key",
+            "expr": "source.date_key",
+            "displayName": "Date Key"
+          },
+          {
+            "name": "clinical_status",
+            "expr": "source.clinical_status",
+            "displayName": "Clinical Status"
+          },
+          {
+            "name": "condition_count",
+            "expr": "source.condition_count",
+            "displayName": "Condition Count"
+          },
+          {
+            "name": "gender",
+            "expr": "source.gender",
+            "displayName": "Gender"
+          },
+          {
+            "name": "age",
+            "expr": "source.age",
+            "displayName": "Age"
+          },
+          {
+            "name": "age_group",
+            "expr": "source.age_group",
+            "displayName": "Age Group"
+          },
+          {
+            "name": "city",
+            "expr": "source.city",
+            "displayName": "City"
+          },
+          {
+            "name": "state",
+            "expr": "source.state",
+            "displayName": "State"
+          },
+          {
+            "name": "is_deceased",
+            "expr": "source.is_deceased",
+            "displayName": "Is Deceased"
+          },
+          {
+            "name": "condition_description",
+            "expr": "source.condition_description",
+            "displayName": "Condition Description"
+          },
+          {
+            "name": "year",
+            "expr": "source.year",
+            "displayName": "Year"
+          },
+          {
+            "name": "month_name",
+            "expr": "source.month_name",
+            "displayName": "Month Name"
+          },
+          {
+            "name": "quarter",
+            "expr": "source.quarter",
+            "displayName": "Quarter"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          },
+          {
+            "name": "active_conditions_count",
+            "expr": "COUNT(CASE WHEN source.clinical_status = 'active' THEN 1 END)",
+            "displayName": "Active Conditions",
+            "comment": "Count of conditions with active clinical status"
+          },
+          {
+            "name": "total_conditions",
+            "expr": "COUNT(*)",
+            "displayName": "Total Conditions",
+            "comment": "Total count of all condition records"
+          },
+          {
+            "name": "unique_patients",
+            "expr": "COUNT(DISTINCT source.patient_key)",
+            "displayName": "Unique Patients",
+            "comment": "Count of distinct patients"
+          },
+          {
+            "name": "avg_conditions_per_patient",
+            "expr": "MEASURE(total_conditions) / MEASURE(unique_patients)",
+            "displayName": "Avg Conditions Per Patient",
+            "comment": "Average number of conditions per patient"
+          }
+        ]
+      }
+    },
+    {
+      "name": "388d1a16",
+      "displayName": "gold_patient_risk",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_patient_risk",
+        "dimensions": [
+          {
+            "name": "patient_key",
+            "expr": "source.patient_key",
+            "displayName": "Patient Key"
+          },
+          {
+            "name": "total_conditions",
+            "expr": "source.total_conditions",
+            "displayName": "Total Conditions"
+          },
+          {
+            "name": "risk_level",
+            "expr": "source.risk_level",
+            "displayName": "Risk Level"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "top_conditions_by_patients",
+      "displayName": "Top Conditions by Patient Volume",
+      "queryLines": [
+        "SELECT\n",
+        "  condition_description,\n",
+        "  COUNT(DISTINCT patient_id) AS patient_count\n",
+        "FROM\n",
+        "  conditions\n",
+        "WHERE\n",
+        "  clinical_status = 'active'\n",
+        "GROUP BY\n",
+        "  condition_description\n",
+        "ORDER BY\n",
+        "  patient_count DESC\n",
+        "LIMIT 10"
+      ],
+      "catalog": "workspace",
+      "schema": "silver"
+    },
+    {
+      "name": "patient_risk_by_age",
+      "displayName": "Patient Risk by Age Group",
+      "config": {
+        "version": "1.1",
+        "source": "SELECT \n  r.patient_key,\n  r.risk_level,\n  r.total_conditions,\n  p.age_group,\n  p.gender,\n  p.city,\n  p.state\nFROM workspace.gold.gold_patient_risk r INNER JOIN workspace.gold.dim_patient p ON r.patient_key = p.patient_key\n",
+        "dimensions": [
+          {
+            "name": "patient_key",
+            "expr": "patient_key",
+            "displayName": "Patient Key"
+          },
+          {
+            "name": "risk_level",
+            "expr": "risk_level",
+            "displayName": "Risk Level"
+          },
+          {
+            "name": "age_group",
+            "expr": "age_group",
+            "displayName": "Age Group"
+          },
+          {
+            "name": "gender",
+            "expr": "gender",
+            "displayName": "Gender"
+          },
+          {
+            "name": "city",
+            "expr": "city",
+            "displayName": "City"
+          },
+          {
+            "name": "state",
+            "expr": "state",
+            "displayName": "State"
+          },
+          {
+            "name": "total_conditions",
+            "expr": "total_conditions",
+            "displayName": "Total Conditions"
+          }
+        ],
+        "measures": [
+          {
+            "name": "patient_count",
+            "expr": "COUNT(DISTINCT patient_key)",
+            "displayName": "Patient Count",
+            "comment": "Number of unique patients"
+          },
+          {
+            "name": "total_risk_patients",
+            "expr": "COUNT(*)",
+            "displayName": "Total Risk Records",
+            "comment": "Total count of patient risk records"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cae5bac6",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        ""
+      ]
+    },
+    {
+      "name": "68cb5985",
+      "displayName": "condition_cooccurrence",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.condition_cooccurrence",
+        "dimensions": [
+          {
+            "name": "condition_a",
+            "expr": "source.condition_a",
+            "displayName": "Condition A"
+          },
+          {
+            "name": "condition_b",
+            "expr": "source.condition_b",
+            "displayName": "Condition B"
+          },
+          {
+            "name": "patient_count",
+            "expr": "source.patient_count",
+            "displayName": "Patient Count"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "0651bda5",
+      "displayName": "Condition",
+      "queryLines": [
+        "SELECT\n",
+        "    CONCAT(condition_a, ' + ', condition_b) AS condition_pair,\n",
+        "    patient_count\n",
+        "FROM gold.condition_cooccurrence\n",
+        "ORDER BY patient_count DESC"
+      ]
+    },
+    {
+      "name": "condition_cooccurrence_stats",
+      "displayName": "Condition Co-occurrence Statistics",
+      "queryLines": [
+        "SELECT\n",
+        "  'All Conditions' as category,\n",
+        "  MIN(patient_count) as min_patients,\n",
+        "  PERCENTILE(patient_count, 0.25) as q1_patients,\n",
+        "  PERCENTILE(patient_count, 0.5) as median_patients,\n",
+        "  PERCENTILE(patient_count, 0.75) as q3_patients,\n",
+        "  MAX(patient_count) as max_patients\n",
+        "FROM\n",
+        "  workspace.gold.condition_cooccurrence"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "6b3f2e76",
+      "displayName": "Patient Health",
+      "layout": [
+        {
+          "widget": {
+            "name": "t1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "61ba6bf5",
+                  "fields": [
+                    {
+                      "name": "countdistinct(patient_key)",
+                      "expression": "COUNT(DISTINCT `patient_key`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "showDescription": false,
+                "title": "Total Patients"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(patient_key)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "fd6f2a17",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "61ba6bf5",
+                  "fields": [
+                    {
+                      "name": "avg(age)",
+                      "expression": "AVG(`age`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Average Age",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(age)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "d7",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "61ba6bf5",
+                  "fields": [
+                    {
+                      "name": "sum(is_deceased)",
+                      "expression": "SUM(`is_deceased`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Deceased Patients"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(is_deceased)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "age",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "61ba6bf5",
+                  "fields": [
+                    {
+                      "name": "count(age_group)",
+                      "expression": "COUNT(`age_group`)"
+                    },
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Patient Age Distribution",
+                "showTitle": true,
+                "description": "Distribution of patients across age groups",
+                "showDescription": true
+              },
+              "mark": {
+                "colors": [
+                  "#B53651",
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "age_group",
+                  "displayName": "Age Group",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "Child",
+                        "Adult",
+                        "Senior"
+                      ]
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "count(age_group)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "displayName": "Patient Count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "count(age_group)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Count"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 2,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "927d79db",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "61ba6bf5",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    },
+                    {
+                      "name": "gender",
+                      "expression": "`gender`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "mark": {},
+              "frame": {
+                "title": "Gender Distribution",
+                "showTitle": true,
+                "showDescription": true,
+                "description": "Distribution of patients across Gender"
+              },
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "count(*)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "displayName": "Patient Count"
+                },
+                "color": {
+                  "fieldName": "gender",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "female",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 3
+                        }
+                      },
+                      {
+                        "value": "male",
+                        "color": "#B11D44"
+                      }
+                    ]
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "count(*)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "compact",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Count"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "beautify-this",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "535343a9",
+                  "fields": [
+                    {
+                      "name": "patient_count",
+                      "expression": "`patient_count`"
+                    },
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "description": "Highest concentration of patients across Massachusetts cities",
+                "showDescription": true,
+                "title": "Patients by City"
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "patient_count",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "none",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Patient Count"
+                  },
+                  "displayName": "Number of Patients",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "city",
+                  "axis": {
+                    "title": ""
+                  },
+                  "displayName": "City",
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 10
+                    },
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "patient_count",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Patients"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 7,
+            "y": 2,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "encounter_type_dist",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "0de99b00",
+                  "fields": [
+                    {
+                      "name": "measure(count)",
+                      "expression": "MEASURE(`count`)"
+                    },
+                    {
+                      "name": "encounter_type",
+                      "expression": "`encounter_type`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Encounter Type Distribution",
+                "showTitle": true,
+                "description": "Breakdown of encounters by type",
+                "showDescription": true
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "measure(count)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Number of Encounters"
+                  },
+                  "displayName": "Count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "encounter_type",
+                  "axis": {
+                    "title": ""
+                  },
+                  "displayName": "Encounter Type",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "measure(count)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Count"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 6,
+            "width": 2,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "encounters_by_year",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "encounters_by_year",
+                  "fields": [
+                    {
+                      "name": "measure(encounter_count)",
+                      "expression": "MEASURE(`encounter_count`)"
+                    },
+                    {
+                      "name": "year",
+                      "expression": "`year`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Encounters by Year",
+                "showTitle": true,
+                "description": "Trend of patient encounters over past 10 years",
+                "showDescription": true
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ],
+                "marker": {
+                  "shape": "circle"
+                }
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "year",
+                  "axis": {
+                    "title": "Year"
+                  },
+                  "displayName": "Year",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "natural-order"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(encounter_count)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Number of Encounters"
+                  },
+                  "displayName": "Total Encounters",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "measure(encounter_count)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Encounters"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 4,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "monthly_encounter_trends",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "monthly_encounters",
+                  "fields": [
+                    {
+                      "name": "month_name",
+                      "expression": "`month_name`"
+                    },
+                    {
+                      "name": "measure(encounter_count)",
+                      "expression": "MEASURE(`encounter_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "title": "Monthly Encounter Trends",
+                "showTitle": true,
+                "description": "Seasonal patterns in patient encounters",
+                "showDescription": true
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  "#FF5162",
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ],
+                "marker": {
+                  "shape": "circle"
+                }
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "month_name",
+                  "axis": {
+                    "title": "Month"
+                  },
+                  "displayName": "Month",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "January",
+                        "February",
+                        "March",
+                        "April",
+                        "May",
+                        "June",
+                        "July",
+                        "August",
+                        "September",
+                        "October",
+                        "November",
+                        "December"
+                      ]
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(encounter_count)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Number of Encounters"
+                  },
+                  "displayName": "Total Encounters",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 6,
+            "width": 4,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "724bbdbd",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d869b326",
+                  "fields": [
+                    {
+                      "name": "sum(encounter_count)",
+                      "expression": "SUM(`encounter_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Encounters",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(encounter_count)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "72249b03",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# <span style=\"text-align:center;display:block\">    Population Health & Patient Utilization Dashboard</span>"
+              ],
+              "verticalAlign": "VERTICAL_ALIGN_CENTER"
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 10,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "age-group-1",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c5f144412adbff76a71fb31f9dd_age_group",
+                "query": {
+                  "datasetName": "d869b326",
+                  "fields": [
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    },
+                    {
+                      "name": "age_group_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "       Age Group"
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "age_group",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c5f144412adbff76a71fb31f9dd_age_group"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 3,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "year-1",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15b0ae82812b382ea7384d88a2783_gender",
+                "query": {
+                  "datasetName": "61ba6bf5",
+                  "fields": [
+                    {
+                      "name": "gender",
+                      "expression": "`gender`"
+                    },
+                    {
+                      "name": "gender_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Gender"
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "gender",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15b0ae82812b382ea7384d88a2783_gender"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 1,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "deceased",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15b0ae82812b382ea7384d88a2783_is_deceased",
+                "query": {
+                  "datasetName": "61ba6bf5",
+                  "fields": [
+                    {
+                      "name": "is_deceased",
+                      "expression": "`is_deceased`"
+                    },
+                    {
+                      "name": "is_deceased_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "showDescription": false,
+                "title": "Deceased"
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "is_deceased",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15b0ae82812b382ea7384d88a2783_is_deceased"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 7,
+            "y": 1,
+            "width": 3,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "city",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15b0ae82812b382ea7384d88a2783_city",
+                "query": {
+                  "datasetName": "61ba6bf5",
+                  "fields": [
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    },
+                    {
+                      "name": "city_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "City"
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "city",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15b0ae82812b382ea7384d88a2783_city"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 1,
+            "width": 2,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "29934643",
+      "displayName": "Clinical Insights",
+      "layout": [
+        {
+          "widget": {
+            "name": "085e2db0",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# <span style=\"text-align:center;display:block;\">Clinical Insights & Disease Analytics</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "condition",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c75df501c499f747b7bf1410c17_condition_description",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "condition_description",
+                      "expression": "`condition_description`"
+                    },
+                    {
+                      "name": "condition_description_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Condition"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "condition_description",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c75df501c499f747b7bf1410c17_condition_description"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 3,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "clinical-status",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c75df501c499f747b7bf1410c17_clinical_status",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "clinical_status",
+                      "expression": "`clinical_status`"
+                    },
+                    {
+                      "name": "clinical_status_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Clinical Status"
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "clinical_status",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c75df501c499f747b7bf1410c17_clinical_status"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 1,
+            "width": 3,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "age",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c75df501c499f747b7bf1410c17_age_group",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    },
+                    {
+                      "name": "age_group_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Age Group"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "age_group",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c75df501c499f747b7bf1410c17_age_group"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 1,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "gender",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c75df501c499f747b7bf1410c17_gender",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "gender",
+                      "expression": "`gender`"
+                    },
+                    {
+                      "name": "gender_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Gender"
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "gender",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c75df501c499f747b7bf1410c17_gender"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 1,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "year",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c75df501c499f747b7bf1410c17_year",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "year",
+                      "expression": "`year`"
+                    },
+                    {
+                      "name": "year_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Year"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "year",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15c75df501c499f747b7bf1410c17_year"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 10,
+            "y": 1,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "t1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Diagnosis"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "count(*)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "d6",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "countdistinct(patient_key)",
+                      "expression": "COUNT(DISTINCT `patient_key`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Distinct Patients"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(patient_key)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "bf2201ed",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    },
+                    {
+                      "name": "condition_description",
+                      "expression": "`condition_description`"
+                    },
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Disease Heatmap",
+                "description": "Condition prevalence across age groups",
+                "showDescription": true
+              },
+              "widgetType": "heatmap",
+              "encodings": {
+                "x": {
+                  "fieldName": "condition_description",
+                  "axis": {
+                    "labelAngle": 0
+                  },
+                  "displayName": "Medical Condition",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "natural-order"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "age_group",
+                  "axis": {
+                    "title": ""
+                  },
+                  "displayName": "Age Group",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "Child",
+                        "Adult",
+                        "Senior"
+                      ]
+                    }
+                  }
+                },
+                "color": {
+                  "fieldName": "count(*)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "none",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "displayName": "Case Count",
+                  "scale": {
+                    "type": "quantitative",
+                    "colorRamp": {
+                      "mode": "scheme",
+                      "scheme": "greens"
+                    }
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 10,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "ae8b6efe",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "measure(avg_conditions_per_patient)",
+                      "expression": "MEASURE(`avg_conditions_per_patient`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Avg Conditions Per Patient"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(avg_conditions_per_patient)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "none",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 2
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "f4a0de4f",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    },
+                    {
+                      "name": "condition_description",
+                      "expression": "`condition_description`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "title": "Top 10 Medical Conditions",
+                "showTitle": true,
+                "description": "Most common conditions by patient count",
+                "showDescription": true
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "count(*)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Number of Cases"
+                  },
+                  "displayName": "Patient Count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "condition_description",
+                  "axis": {
+                    "title": ""
+                  },
+                  "displayName": "Medical Condition",
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 10
+                    },
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "count(*)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Cases"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 5,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "d7",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "count(clinical_status)",
+                      "expression": "COUNT(`clinical_status`)"
+                    },
+                    {
+                      "name": "clinical_status",
+                      "expression": "`clinical_status`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Active vs Resolved Conditions",
+                "showDescription": true,
+                "description": "Distribution of Condition Status\n"
+              },
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "count(clinical_status)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "clinical_status",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 6,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "ecacbda2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    },
+                    {
+                      "name": "year",
+                      "expression": "`year`"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`year` >= 2010"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "title": "Diagnosis Trends",
+                "showTitle": true,
+                "description": "Trend of medical conditions diagnosed from 2010 onwards",
+                "showDescription": true
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  "#1E88E5"
+                ],
+                "marker": {
+                  "shape": "circle"
+                }
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "year",
+                  "axis": {
+                    "title": "Year"
+                  },
+                  "displayName": "Year",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "natural-order"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "count(*)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Number of Diagnoses"
+                  },
+                  "displayName": "Total Diagnoses",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "count(*)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Diagnoses"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 7,
+            "y": 2,
+            "width": 5,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "ffe15175",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "patient_risk_by_age",
+                  "fields": [
+                    {
+                      "name": "risk_level",
+                      "expression": "`risk_level`"
+                    },
+                    {
+                      "name": "measure(patient_count)",
+                      "expression": "MEASURE(`patient_count`)"
+                    },
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Patient Risk by Age Group",
+                "showTitle": true,
+                "description": "Distribution of risk levels across different age groups",
+                "showDescription": true
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "selectionColor"
+                  }
+                ],
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "age_group",
+                  "displayName": "Age Group",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "Child",
+                        "Adult",
+                        "Senior"
+                      ]
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(patient_count)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Patient Count",
+                    "hideGrid": false,
+                    "hideLabels": true
+                  },
+                  "displayName": "Number of Patients",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "risk_level",
+                  "legend": {
+                    "position": "right",
+                    "hideTitle": false
+                  },
+                  "displayName": "Risk Level",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Low",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 2
+                        }
+                      },
+                      {
+                        "value": "Medium",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 6
+                        }
+                      }
+                    ]
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "measure(patient_count)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Patients"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 6,
+            "width": 4,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "3635061c",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "0651bda5",
+                  "fields": [
+                    {
+                      "name": "sum(patient_count)",
+                      "expression": "SUM(`patient_count`)"
+                    },
+                    {
+                      "name": "condition_pair",
+                      "expression": "`condition_pair`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Top 5 Condition pairs",
+                "showTitle": true,
+                "description": "Top condition pairs frequently occurring together in patients",
+                "showDescription": true
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 1
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(patient_count)",
+                  "axis": {
+                    "title": "Number of Patients"
+                  },
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "displayName": "Patient Count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "condition_pair",
+                  "axis": {
+                    "title": "Condition Pairs"
+                  },
+                  "displayName": "Condition Pair",
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 5
+                    },
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "sum(patient_count)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Patients"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 6,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "2b5694ab",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "patient_risk_by_age",
+                  "fields": [
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    },
+                    {
+                      "name": "measure(patient_count)",
+                      "expression": "MEASURE(`patient_count`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`risk_level` = 'High'"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "title": "High-Risk Patients by Location",
+                "showTitle": true,
+                "description": "Geographic distribution of high-risk patients across cities",
+                "showDescription": true
+              },
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "city",
+                  "axis": {
+                    "title": "City",
+                    "hideTitle": true,
+                    "hideLabels": false,
+                    "labelAngle": 0
+                  },
+                  "displayName": "City",
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 5
+                    },
+                    "sort": {
+                      "by": "y-reversed"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(patient_count)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Number of High-Risk Patients",
+                    "hideTitle": false
+                  },
+                  "displayName": "High-Risk Patient Count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 6,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "total_active_kpi",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3d0b7fd1",
+                  "fields": [
+                    {
+                      "name": "measure(active_conditions_count)",
+                      "expression": "MEASURE(`active_conditions_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "title": "Total Active Conditions",
+                "showTitle": true,
+                "description": "Total count of active medical conditions across all patients",
+                "showDescription": true
+              },
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(active_conditions_count)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 2,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {
+        "light": "#2C3E50",
+        "dark": "#1A1D24"
+      },
+      "widgetBackgroundColor": {
+        "light": "#34495E",
+        "dark": "#252930"
+      },
+      "widgetBorderColor": {
+        "light": "#4A5F7F",
+        "dark": "#3A3F4B"
+      },
+      "fontColor": {
+        "light": "#ECF0F1",
+        "dark": "#E8EAED"
+      },
+      "selectionColor": {
+        "light": "#0366D6",
+        "dark": "#58A6FF"
+      },
+      "visualizationColors": [
+        "#4A90E2",
+        "#50C878",
+        "#FF6B6B",
+        "#9B59B6",
+        "#F39C12",
+        "#1ABC9C",
+        "#E74C3C",
+        "#3498DB",
+        "#2ECC71",
+        "#E67E22"
+      ],
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
