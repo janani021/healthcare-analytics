@@ -142,6 +142,41 @@ Analyze disease burden, clinical condition trends, and patient risk factors acro
 - Which conditions frequently occur together?
 - Which cities contain the highest concentration of high-risk patients?
 
+# Dashboard 3: Revenue Cycle & Financial Analytics
+
+## Objective
+Provide visibility into healthcare claim volumes, financial performance, insurance provider contributions, and claim value distribution to support revenue cycle and financial decision-making.
+### Key Performance Indicators (KPIs)
+- **Total Claims**
+- **Total Claim Value**
+- **Average Claim Amount**
+- **Insurance Providers**
+
+### Filters
+- Insurance Provider
+- Age Group
+- Gender
+- Claim Value Band
+- City
+
+### Analytics
+#### Revenue Analysis
+- Claim Amount by Insurance Provider
+- Claim Amount by Age Group and Gender
+
+#### Claim Distribution Analysis
+- Claim Amount Distribution
+- Claim Value Band Analysis
+- Claim Volume vs Amount Analysis
+- Claim Flow Analysis (Insurance Provider → Claim Value Band → Age Group)
+
+### Business Questions Answered
+
+- Which insurance providers generate the highest claim value?
+- How are claims distributed across value bands?
+- Which insurance providers contribute to high-value claims?
+- How does claim value vary across age groups and genders?
+
 ## Data Modeling
 
 Implemented using **Kimball Star Schema Design**.
