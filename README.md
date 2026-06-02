@@ -16,7 +16,7 @@ A modern healthcare analytics platform built using Databricks Medallion Architec
 
 ## Dataset
 
-This project uses synthetic healthcare data generated using **Synthea™**, an open-source synthetic patient generator that creates realistic but non-identifiable electronic health records (EHRs).
+This project uses synthetic healthcare data generated using **Synthea**, an open-source synthetic patient generator that creates realistic but non-identifiable electronic health records (EHRs).
 
 ### Dataset Source
 
@@ -46,13 +46,6 @@ Data is cleaned, standardized, and validated.
 - silver_medications
 - silver_observations
 
-### Data Quality Framework
-Implemented data quality validations include:
-- Null key validation
-- Duplicate record detection
-- Data type standardization
-- Missing value handling
-
 ### Gold Layer
 Implemented using **Kimball Dimensional Modeling**.
 
@@ -67,6 +60,13 @@ Implemented using **Kimball Dimensional Modeling**.
 #### Semantic Layer Tables
 - gold_population_health
 - gold_clinical_analytics
+
+### Data Quality Framework
+Implemented data quality validations include:
+- Null key validation
+- Duplicate record detection
+- Data type standardization
+- Missing value handling
 
 ## Unity Catalog & Data Governance
 The platform leverages **Unity Catalog** to provide centralized governance across the data estate.
