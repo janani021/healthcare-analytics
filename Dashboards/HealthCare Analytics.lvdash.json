@@ -750,6 +750,153 @@
         "FROM\n",
         "  workspace.gold.condition_cooccurrence"
       ]
+    },
+    {
+      "name": "34df4d44",
+      "displayName": "gold_revenue_cycle_analytics",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.gold_revenue_cycle_analytics",
+        "dimensions": [
+          {
+            "name": "claim_key",
+            "expr": "source.claim_key",
+            "displayName": "Claim Key"
+          },
+          {
+            "name": "patient_key",
+            "expr": "source.patient_key",
+            "displayName": "Patient Key"
+          },
+          {
+            "name": "encounter_key",
+            "expr": "source.encounter_key",
+            "displayName": "Encounter Key"
+          },
+          {
+            "name": "provider_key",
+            "expr": "source.provider_key",
+            "displayName": "Provider Key"
+          },
+          {
+            "name": "insurance_name",
+            "expr": "source.insurance_name",
+            "displayName": "Insurance Name"
+          },
+          {
+            "name": "claim_status",
+            "expr": "source.claim_status",
+            "displayName": "Claim Status"
+          },
+          {
+            "name": "claim_amount",
+            "expr": "source.claim_amount",
+            "displayName": "Claim Amount"
+          },
+          {
+            "name": "priority_code",
+            "expr": "source.priority_code",
+            "displayName": "Priority Code"
+          },
+          {
+            "name": "claim_count",
+            "expr": "source.claim_count",
+            "displayName": "Claim Count"
+          },
+          {
+            "name": "gender",
+            "expr": "source.gender",
+            "displayName": "Gender"
+          },
+          {
+            "name": "age",
+            "expr": "source.age",
+            "displayName": "Age"
+          },
+          {
+            "name": "age_group",
+            "expr": "source.age_group",
+            "displayName": "Age Group"
+          },
+          {
+            "name": "city",
+            "expr": "source.city",
+            "displayName": "City"
+          },
+          {
+            "name": "state",
+            "expr": "source.state",
+            "displayName": "State"
+          },
+          {
+            "name": "is_deceased",
+            "expr": "source.is_deceased",
+            "displayName": "Is Deceased"
+          },
+          {
+            "name": "claim_value_band",
+            "expr": "source.claim_value_band",
+            "displayName": "Claim Value Band"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          },
+          {
+            "name": "total_claim_amount",
+            "expr": "SUM(source.claim_amount)",
+            "displayName": "Total Claim Amount"
+          },
+          {
+            "name": "avg_claim_amount",
+            "expr": "AVG(source.claim_amount)",
+            "displayName": "Average Claim Amount"
+          }
+        ]
+      }
+    },
+    {
+      "name": "fact_claims_mv",
+      "displayName": "Insurance Claims Analytics",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.fact_claims",
+        "dimensions": [
+          {
+            "name": "insurance_name",
+            "expr": "source.insurance_name",
+            "displayName": "Insurance Provider"
+          },
+          {
+            "name": "claim_status",
+            "expr": "source.claim_status",
+            "displayName": "Claim Status"
+          },
+          {
+            "name": "priority_code",
+            "expr": "source.priority_code",
+            "displayName": "Priority Code"
+          }
+        ],
+        "measures": [
+          {
+            "name": "total_claim_value",
+            "expr": "SUM(source.claim_amount)",
+            "displayName": "Total Claim Value",
+            "comment": "Sum of all claim amounts"
+          },
+          {
+            "name": "claim_count",
+            "expr": "COUNT(*)",
+            "displayName": "Claim Count",
+            "comment": "Total number of claims"
+          }
+        ]
+      }
     }
   ],
   "pages": [
@@ -794,7 +941,7 @@
             "x": 0,
             "y": 2,
             "width": 2,
-            "height": 1
+            "height": 2
           }
         },
         {
@@ -831,9 +978,9 @@
           },
           "position": {
             "x": 0,
-            "y": 4,
+            "y": 6,
             "width": 2,
-            "height": 1
+            "height": 2
           }
         },
         {
@@ -870,9 +1017,9 @@
           },
           "position": {
             "x": 0,
-            "y": 5,
+            "y": 8,
             "width": 2,
-            "height": 1
+            "height": 2
           }
         },
         {
@@ -999,7 +1146,7 @@
           "position": {
             "x": 2,
             "y": 2,
-            "width": 2,
+            "width": 3,
             "height": 4
           }
         },
@@ -1089,7 +1236,7 @@
             }
           },
           "position": {
-            "x": 4,
+            "x": 5,
             "y": 2,
             "width": 3,
             "height": 4
@@ -1225,9 +1372,9 @@
             }
           },
           "position": {
-            "x": 7,
+            "x": 8,
             "y": 2,
-            "width": 3,
+            "width": 4,
             "height": 4
           }
         },
@@ -1357,7 +1504,7 @@
             }
           },
           "position": {
-            "x": 4,
+            "x": 6,
             "y": 6,
             "width": 2,
             "height": 4
@@ -1492,7 +1639,7 @@
             }
           },
           "position": {
-            "x": 0,
+            "x": 2,
             "y": 6,
             "width": 4,
             "height": 4
@@ -1626,7 +1773,7 @@
             }
           },
           "position": {
-            "x": 6,
+            "x": 8,
             "y": 6,
             "width": 4,
             "height": 4
@@ -1666,9 +1813,9 @@
           },
           "position": {
             "x": 0,
-            "y": 3,
+            "y": 4,
             "width": 2,
-            "height": 1
+            "height": 2
           }
         },
         {
@@ -1684,7 +1831,7 @@
           "position": {
             "x": 0,
             "y": 0,
-            "width": 10,
+            "width": 12,
             "height": 1
           }
         },
@@ -1776,7 +1923,7 @@
           "position": {
             "x": 3,
             "y": 1,
-            "width": 2,
+            "width": 3,
             "height": 1
           }
         },
@@ -1821,7 +1968,7 @@
             }
           },
           "position": {
-            "x": 7,
+            "x": 9,
             "y": 1,
             "width": 3,
             "height": 1
@@ -1867,9 +2014,9 @@
             }
           },
           "position": {
-            "x": 5,
+            "x": 6,
             "y": 1,
-            "width": 2,
+            "width": 3,
             "height": 1
           }
         }
@@ -2891,20 +3038,15 @@
               {
                 "name": "main_query",
                 "query": {
-                  "datasetName": "patient_risk_by_age",
+                  "datasetName": "34df4d44",
                   "fields": [
                     {
-                      "name": "city",
-                      "expression": "`city`"
+                      "name": "claim_amount",
+                      "expression": "`claim_amount`"
                     },
                     {
-                      "name": "measure(patient_count)",
-                      "expression": "MEASURE(`patient_count`)"
-                    }
-                  ],
-                  "filters": [
-                    {
-                      "expression": "`risk_level` = 'High'"
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
                     }
                   ],
                   "disaggregated": false
@@ -2912,37 +3054,41 @@
               }
             ],
             "spec": {
+              "version": 3,
               "frame": {
-                "title": "High-Risk Patients by Location",
+                "title": "Claim Amount Distribution",
                 "showTitle": true,
-                "description": "Geographic distribution of high-risk patients across cities",
+                "description": "Distribution of claim amounts across all claims",
                 "showDescription": true
               },
-              "version": 3,
-              "widgetType": "bar",
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 1
+                  }
+                ]
+              },
+              "widgetType": "histogram",
               "encodings": {
                 "x": {
-                  "fieldName": "city",
-                  "axis": {
-                    "title": "City",
-                    "hideTitle": true,
-                    "hideLabels": false,
-                    "labelAngle": 0
-                  },
-                  "displayName": "City",
-                  "scale": {
-                    "type": "categorical",
-                    "categorySize": {
-                      "type": "number-of-categories",
-                      "number": 5
-                    },
-                    "sort": {
-                      "by": "y-reversed"
+                  "fieldName": "claim_amount",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
                     }
+                  },
+                  "displayName": "Claim Amount",
+                  "scale": {
+                    "type": "quantitative"
                   }
                 },
                 "y": {
-                  "fieldName": "measure(patient_count)",
+                  "fieldName": "count(*)",
                   "format": {
                     "type": "number-plain",
                     "abbreviation": "compact",
@@ -2951,11 +3097,7 @@
                       "places": 0
                     }
                   },
-                  "axis": {
-                    "title": "Number of High-Risk Patients",
-                    "hideTitle": false
-                  },
-                  "displayName": "High-Risk Patient Count",
+                  "displayName": "Number of Claims",
                   "scale": {
                     "type": "quantitative"
                   }
@@ -3020,6 +3162,1198 @@
             "y": 6,
             "width": 2,
             "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "claim_histogram",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "sum(claim_amount)",
+                      "expression": "SUM(`claim_amount`)"
+                    },
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "title": "Claim Amount by Age Group",
+                "showTitle": true,
+                "description": "Total claim amounts compared across different age groups",
+                "showDescription": true
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "age_group",
+                  "axis": {
+                    "title": "Age Group"
+                  },
+                  "displayName": "Age Group",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "natural-order"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(claim_amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Total Claim Amount"
+                  },
+                  "displayName": "Total Claim Amount",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "sum(claim_amount)",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "USD",
+                      "abbreviation": "compact",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Amount"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 15,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "age_group_claims",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "measure(total_claim_amount)",
+                      "expression": "MEASURE(`total_claim_amount`)"
+                    },
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "title": "Claim Amount by Age Group",
+                "showTitle": true,
+                "description": "Total claim amounts compared across different age groups",
+                "showDescription": true
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "age_group",
+                  "axis": {
+                    "title": "Age Group"
+                  },
+                  "displayName": "Age Group",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "natural-order"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(total_claim_amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Total Claim Amount"
+                  },
+                  "displayName": "Total Claim Amount",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "measure(total_claim_amount)",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "USD",
+                      "abbreviation": "compact",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Amount"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 20,
+            "width": 6,
+            "height": 4
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "86ea9fe4",
+      "displayName": "Revenue Cycle",
+      "layout": [
+        {
+          "widget": {
+            "name": "51523477",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# <span style=\"text-align:center;display:block;\">Revenue Cycle & Financial Analytics</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "gender",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15e178ebe1b48b1c9f508cdeed0b5_gender",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "gender",
+                      "expression": "`gender`"
+                    },
+                    {
+                      "name": "gender_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Gender"
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "gender",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15e178ebe1b48b1c9f508cdeed0b5_gender"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 1,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "age-group",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15e178ebe1b48b1c9f508cdeed0b5_age_group",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    },
+                    {
+                      "name": "age_group_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Age Group"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "age_group",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15e178ebe1b48b1c9f508cdeed0b5_age_group"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 1,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "insurance-name",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15e178ebe1b48b1c9f508cdeed0b5_insurance_name",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "insurance_name",
+                      "expression": "`insurance_name`"
+                    },
+                    {
+                      "name": "insurance_name_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Insurance Name"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "insurance_name",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15e178ebe1b48b1c9f508cdeed0b5_insurance_name"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 3,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "city",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15e178ebe1b48b1c9f508cdeed0b5_city",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    },
+                    {
+                      "name": "city_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "City"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "city",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15e178ebe1b48b1c9f508cdeed0b5_city"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 10,
+            "y": 1,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "claim-value",
+            "queries": [
+              {
+                "name": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15e178ebe1b48b1c9f508cdeed0b5_claim_value_band",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "claim_value_band",
+                      "expression": "`claim_value_band`"
+                    },
+                    {
+                      "name": "claim_value_band_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Claim Value Filter",
+                "showDescription": true,
+                "description": "Filter claims by value range bands"
+              },
+              "widgetType": "filter-multi-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "claim_value_band",
+                    "queryName": "dashboards/01f15b0aa93317e3be4ef88e5ff4d3e0/datasets/01f15e178ebe1b48b1c9f508cdeed0b5_claim_value_band"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 7,
+            "y": 1,
+            "width": 3,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "total-claims",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Claims"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "count(*)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "t1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "sum(claim_amount)",
+                      "expression": "SUM(`claim_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Claim Value"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(claim_amount)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "average-claim-amount",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "avg(claim_amount)",
+                      "expression": "AVG(`claim_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Average Claim Amount"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(claim_amount)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 6,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "insurance-providers",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "countdistinct(insurance_name)",
+                      "expression": "COUNT(DISTINCT `insurance_name`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Insurance Providers"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "countdistinct(insurance_name)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "f5d402a9",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "measure(total_claim_amount)",
+                      "expression": "MEASURE(`total_claim_amount`)"
+                    },
+                    {
+                      "name": "insurance_name",
+                      "expression": "`insurance_name`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "title": "Claim Amount by Insurance Provider",
+                "showTitle": true,
+                "description": "Total claim amounts compared across different insurance providers",
+                "showDescription": true
+              },
+              "version": 3,
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "measure(total_claim_amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Total Claim Amount"
+                  },
+                  "displayName": "Total Claim Amount",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "insurance_name",
+                  "axis": {
+                    "title": "Insurance Provider"
+                  },
+                  "displayName": "Insurance Provider",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "measure(total_claim_amount)",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "USD",
+                      "abbreviation": "compact",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Amount"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 4,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "age_gender_area",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "gender",
+                      "expression": "`gender`"
+                    },
+                    {
+                      "name": "measure(total_claim_amount)",
+                      "expression": "MEASURE(`total_claim_amount`)"
+                    },
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Claim Amount by Age Group and Gender",
+                "showTitle": true,
+                "description": "Comparison of claim amounts across age groups by gender",
+                "showDescription": true
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 1
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  }
+                ],
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "age_group",
+                  "axis": {
+                    "title": "Age Group"
+                  },
+                  "displayName": "Age Group",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "natural-order"
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(total_claim_amount)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Total Claim Amount"
+                  },
+                  "displayName": "Total Claim Amount",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "gender",
+                  "legend": {
+                    "position": "right"
+                  },
+                  "displayName": "Gender",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "female",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 4
+                        }
+                      },
+                      {
+                        "value": "male",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 5
+                        }
+                      }
+                    ]
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "measure(total_claim_amount)",
+                    "format": {
+                      "type": "number-currency",
+                      "currencyCode": "USD",
+                      "abbreviation": "compact",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Amount"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "claim_value_funnel",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    },
+                    {
+                      "name": "claim_value_band",
+                      "expression": "`claim_value_band`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Claims Progression by Value Band",
+                "showTitle": true,
+                "description": "Funnel showing claim volume across value bands",
+                "showDescription": true
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 1
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "funnel",
+              "encodings": {
+                "x": {
+                  "fieldName": "count(*)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Number of Claims"
+                },
+                "y": {
+                  "fieldName": "claim_value_band",
+                  "displayName": "Claim Value Band",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "Low",
+                        "Medium",
+                        "High"
+                      ]
+                    }
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "count(*)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Claims"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 2,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "claim-flow-analysis",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "insurance_name",
+                      "expression": "`insurance_name`"
+                    },
+                    {
+                      "name": "claim_value_band",
+                      "expression": "`claim_value_band`"
+                    },
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    },
+                    {
+                      "name": "sum(claim_amount)",
+                      "expression": "SUM(`claim_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 1,
+              "frame": {
+                "showTitle": true,
+                "title": "Claim Flow Analysis",
+                "showDescription": true,
+                "description": "Shows the flow of claims from insurance providers to claim value bands and patient demographics."
+              },
+              "widgetType": "sankey",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(claim_amount)"
+                },
+                "stages": [
+                  {
+                    "fieldName": "insurance_name"
+                  },
+                  {
+                    "fieldName": "claim_value_band"
+                  },
+                  {
+                    "fieldName": "age_group"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 6,
+            "width": 7,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "c81f5210",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "34df4d44",
+                  "fields": [
+                    {
+                      "name": "claim_count",
+                      "expression": "`claim_count`"
+                    },
+                    {
+                      "name": "claim_amount",
+                      "expression": "`claim_amount`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Claim Volume vs Amount Analysis",
+                "showTitle": true,
+                "description": "Relationship between claim frequency and claim amounts",
+                "showDescription": true
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ],
+                "opacity": 0.7,
+                "size": 3
+              },
+              "widgetType": "scatter",
+              "encodings": {
+                "x": {
+                  "fieldName": "claim_count",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "none",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Number of Claims"
+                  },
+                  "displayName": "Number of Claims",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "claim_amount",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Claim Amount"
+                  },
+                  "displayName": "Claim Amount",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 6,
+            "width": 3,
+            "height": 4
           }
         }
       ],
