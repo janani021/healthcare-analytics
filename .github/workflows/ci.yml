@@ -25,5 +25,4 @@ jobs:
           pip install pytest
 
       - name: Run tests
-        run: |
-          echo "CI pipeline executed successfully"
+        run: pytest tests/
