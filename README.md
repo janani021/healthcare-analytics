@@ -14,6 +14,11 @@ A modern healthcare analytics platform built using Databricks Medallion Architec
 - SQL
 - Delta Tables
 
+### Machine Learning & MLOps
+
+- Scikit-Learn
+- MLflow
+
 ## Dataset
 
 This project uses synthetic healthcare data generated using **Synthea**, an open-source synthetic patient generator that creates realistic but non-identifiable electronic health records (EHRs).
@@ -176,6 +181,58 @@ Provide visibility into healthcare claim volumes, financial performance, insuran
 - How are claims distributed across value bands?
 - Which insurance providers contribute to high-value claims?
 - How does claim value vary across age groups and genders?
+
+# Dashboard 4: Patient Readmission Risk Analytics
+
+## Objective
+
+Predict patient readmission risk using machine learning and identify high-risk patient populations.
+
+### Feature Engineering
+
+A patient-level feature table (`gold.patient_readmission_features`) was created by combining:
+- dim_patient
+- fact_encounter
+- fact_claims
+- fact_patient_conditions
+
+### Readmission Label
+
+A binary target variable (`readmitted_30_days`) was generated using encounter history.
+- **1** = Patient had a subsequent encounter within 30 days
+- **0** = No encounter occurred within 30 days
+
+## Machine Learning & MLOps
+
+### Model Development
+
+A Logistic Regression model was developed to predict patient readmission risk using demographic, clinical, and healthcare utilization features.
+
+### MLflow Experiment Tracking
+
+MLflow was used to:
+
+- Track model experiments
+- Log model parameters
+- Log evaluation metrics
+- Compare model versions
+
+## Key Performance Indicators (KPIs)
+
+- **Total Patients**
+- **High-Risk Patients**
+- **Average Risk Score**
+- **Average Condition Burden**
+
+## Analytics
+
+- Readmission Rate by Age Group and Gender
+- Patient Risk Distribution
+
+## Business Questions Answered
+
+- Which patients are at highest risk of readmission?
+- How does readmission risk vary across demographic groups?
 
 ## Data Modeling
 
