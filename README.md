@@ -217,19 +217,19 @@ MLflow was used to:
 - Log evaluation metrics
 - Compare model versions
 
-## Key Performance Indicators (KPIs)
+### Key Performance Indicators (KPIs)
 
 - **Total Patients**
 - **High-Risk Patients**
 - **Average Risk Score**
 - **Average Condition Burden**
 
-## Analytics
+### Analytics
 
 - Readmission Rate by Age Group and Gender
 - Patient Risk Distribution
 
-## Business Questions Answered
+### Business Questions Answered
 
 - Which patients are at highest risk of readmission?
 - How does readmission risk vary across demographic groups?
