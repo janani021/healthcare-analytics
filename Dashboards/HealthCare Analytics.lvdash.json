@@ -897,6 +897,150 @@
           }
         ]
       }
+    },
+    {
+      "name": "68b7e352",
+      "displayName": "patient_readmission_predictions",
+      "config": {
+        "version": "1.1",
+        "source": "workspace.gold.patient_readmission_predictions",
+        "dimensions": [
+          {
+            "name": "patient_key",
+            "expr": "source.patient_key",
+            "displayName": "Patient Key"
+          },
+          {
+            "name": "gender",
+            "expr": "source.gender",
+            "displayName": "Gender"
+          },
+          {
+            "name": "dob",
+            "expr": "source.dob",
+            "displayName": "Dob"
+          },
+          {
+            "name": "age",
+            "expr": "source.age",
+            "displayName": "Age"
+          },
+          {
+            "name": "city",
+            "expr": "source.city",
+            "displayName": "City"
+          },
+          {
+            "name": "state",
+            "expr": "source.state",
+            "displayName": "State"
+          },
+          {
+            "name": "is_deceased",
+            "expr": "source.is_deceased",
+            "displayName": "Is Deceased"
+          },
+          {
+            "name": "age_group",
+            "expr": "source.age_group",
+            "displayName": "Age Group"
+          },
+          {
+            "name": "encounter_count",
+            "expr": "source.encounter_count",
+            "displayName": "Encounter Count"
+          },
+          {
+            "name": "last_encounter_date",
+            "expr": "source.last_encounter_date",
+            "displayName": "Last Encounter Date"
+          },
+          {
+            "name": "claim_count",
+            "expr": "source.claim_count",
+            "displayName": "Claim Count"
+          },
+          {
+            "name": "total_claim_amount",
+            "expr": "source.total_claim_amount",
+            "displayName": "Total Claim Amount"
+          },
+          {
+            "name": "avg_claim_amount",
+            "expr": "source.avg_claim_amount",
+            "displayName": "Avg Claim Amount"
+          },
+          {
+            "name": "condition_count",
+            "expr": "source.condition_count",
+            "displayName": "Condition Count"
+          },
+          {
+            "name": "readmitted_30_days",
+            "expr": "source.readmitted_30_days",
+            "displayName": "Readmitted 30 Days"
+          },
+          {
+            "name": "risk_score",
+            "expr": "source.risk_score",
+            "displayName": "Risk Score"
+          },
+          {
+            "name": "predicted_label",
+            "expr": "source.predicted_label",
+            "displayName": "Predicted Label"
+          },
+          {
+            "name": "claim_amount_band",
+            "expr": "CASE WHEN source.total_claim_amount < 10000 THEN 'Under $10K' WHEN source.total_claim_amount < 25000 THEN '$10K-$25K' WHEN source.total_claim_amount < 50000 THEN '$25K-$50K' WHEN source.total_claim_amount < 100000 THEN '$50K-$100K' ELSE 'Over $100K' END",
+            "displayName": "Claim Amount Band"
+          },
+          {
+            "name": "risk_band",
+            "expr": "CASE WHEN source.risk_score >= 0.7 THEN 'High Risk' WHEN source.risk_score >= 0.3 THEN 'Medium Risk' ELSE 'Low Risk' END",
+            "displayName": "Risk Band"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          },
+          {
+            "name": "readmission_rate",
+            "expr": "SUM(CASE WHEN source.readmitted_30_days = 1 THEN 1 ELSE 0 END) * 1.0 / COUNT(*)",
+            "displayName": "Readmission Rate",
+            "comment": "Percentage of patients readmitted within 30 days"
+          }
+        ]
+      }
+    },
+    {
+      "name": "readmission_comparison",
+      "displayName": "Readmission Comparison Dataset",
+      "queryLines": [
+        "SELECT\n",
+        "  CASE\n",
+        "    WHEN readmitted_30_days = 1 THEN 'Readmitted'\n",
+        "    ELSE 'Not Readmitted'\n",
+        "  END AS readmission_status,\n",
+        "  'Actual' AS prediction_type\n",
+        "FROM\n",
+        "  workspace.gold.patient_readmission_predictions\n",
+        "UNION ALL\n",
+        "SELECT\n",
+        "  CASE\n",
+        "    WHEN predicted_label = 1 THEN 'Readmitted'\n",
+        "    ELSE 'Not Readmitted'\n",
+        "  END AS readmission_status,\n",
+        "  'Predicted' AS prediction_type\n",
+        "FROM\n",
+        "  workspace.gold.patient_readmission_predictions"
+      ],
+      "catalog": "workspace",
+      "schema": "gold"
     }
   ],
   "pages": [
@@ -4354,6 +4498,687 @@
             "y": 6,
             "width": 3,
             "height": 4
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "6a7c814b",
+      "displayName": "Readmission",
+      "layout": [
+        {
+          "widget": {
+            "name": "0f2e6c8d",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# <span style=\"text-align:center;display:block;\">Readmission Analytics</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "reas",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "68b7e352",
+                  "fields": [
+                    {
+                      "name": "gender",
+                      "expression": "`gender`"
+                    },
+                    {
+                      "name": "measure(readmission_rate)",
+                      "expression": "MEASURE(`readmission_rate`)"
+                    },
+                    {
+                      "name": "age_group",
+                      "expression": "`age_group`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "description": "Comparison of 30-day readmissions by gender and age group",
+                "showDescription": true,
+                "title": "Readmission rates by age group and gender"
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 1
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  }
+                ],
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "age_group",
+                  "displayName": "Age Group",
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "custom-order",
+                      "orderedValues": [
+                        "Child",
+                        "Adult",
+                        "Senior"
+                      ]
+                    }
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(readmission_rate)",
+                  "format": {
+                    "type": "number-percent",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 1
+                    }
+                  },
+                  "axis": {
+                    "title": "Readmission Rate (%)"
+                  },
+                  "displayName": "Readmission Rate",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "gender",
+                  "legend": {
+                    "position": "right"
+                  },
+                  "displayName": "Gender",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "female",
+                        "color": {
+                          "themeColorType": "selectionColor"
+                        }
+                      },
+                      {
+                        "value": "male",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 8
+                        }
+                      }
+                    ]
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "measure(readmission_rate)",
+                    "format": {
+                      "type": "number-percent",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 1
+                      }
+                    },
+                    "displayName": "Rate"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 1,
+            "width": 4,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "dfc9aecc",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "readmission_comparison",
+                  "fields": [
+                    {
+                      "name": "prediction_type",
+                      "expression": "`prediction_type`"
+                    },
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    },
+                    {
+                      "name": "readmission_status",
+                      "expression": "`readmission_status`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Actual vs Predicted Readmission Rates",
+                "showDescription": true,
+                "description": "Comparison of actual readmission outcomes vs model predictions"
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 1
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  }
+                ],
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "count(*)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "axis": {
+                    "title": "Patient Count"
+                  },
+                  "displayName": "Number of Patients",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "readmission_status",
+                  "displayName": "Readmission Status",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "prediction_type",
+                  "legend": {
+                    "position": "right"
+                  },
+                  "displayName": "Type",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Actual",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 1
+                        }
+                      },
+                      {
+                        "value": "Predicted",
+                        "color": {
+                          "themeColorType": "selectionColor"
+                        }
+                      }
+                    ],
+                    "sort": {
+                      "by": "natural-order"
+                    }
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "count(*)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Patients"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 1,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "readmission-rate-by-state",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "68b7e352",
+                  "fields": [
+                    {
+                      "name": "sum(readmitted_30_days)",
+                      "expression": "SUM(`readmitted_30_days`)"
+                    },
+                    {
+                      "name": "city",
+                      "expression": "`city`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Readmission Rate by State",
+                "showDescription": true,
+                "description": "Patient readmission rates across states"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(readmitted_30_days)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "city",
+                  "scale": {
+                    "type": "categorical",
+                    "categorySize": {
+                      "type": "number-of-categories",
+                      "number": 10
+                    },
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 5,
+            "width": 5,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "readmission-rate-by-condition",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "68b7e352",
+                  "fields": [
+                    {
+                      "name": "condition_count",
+                      "expression": "`condition_count`"
+                    },
+                    {
+                      "name": "measure(readmission_rate)",
+                      "expression": "MEASURE(`readmission_rate`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Readmission Rate by Condition Count",
+                "showDescription": true,
+                "description": "Readmission rates change as the number of diagnosed conditions increases."
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "condition_count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "measure(readmission_rate)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 7,
+            "y": 5,
+            "width": 5,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "fcaff964",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "68b7e352",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    },
+                    {
+                      "name": "risk_band",
+                      "expression": "`risk_band`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 1
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "selectionColor"
+                  }
+                ]
+              },
+              "frame": {
+                "title": "Risk Band Distribution ",
+                "showTitle": true,
+                "description": "Patient distribution across risk levels: High (≥0.7), Medium (0.3-0.7), Low (<0.3)",
+                "showDescription": true
+              },
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "count(*)",
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 0
+                    }
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Patient Count"
+                },
+                "color": {
+                  "fieldName": "risk_band",
+                  "displayName": "Risk Band",
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "High Risk",
+                        "color": {
+                          "themeColorType": "selectionColor"
+                        }
+                      },
+                      {
+                        "value": "Medium Risk",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 6
+                        }
+                      },
+                      {
+                        "value": "Low Risk",
+                        "color": {
+                          "themeColorType": "visualizationColors",
+                          "position": 2
+                        }
+                      }
+                    ]
+                  }
+                },
+                "label": {
+                  "show": true,
+                  "text": {
+                    "fieldName": "count(*)",
+                    "format": {
+                      "type": "number-plain",
+                      "abbreviation": "none",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 0
+                      }
+                    },
+                    "displayName": "Patients"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 1,
+            "width": 3,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "9ff8d5ed",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "68b7e352",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`risk_band` = 'High Risk'"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "High-Risk Patients",
+                "showTitle": true,
+                "showDescription": true,
+                "description": "Patients with readmission risk score ≥ 0.7"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "count(*)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "total-patients",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "68b7e352",
+                  "fields": [
+                    {
+                      "name": "count(*)",
+                      "expression": "COUNT(`*`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Total Patients",
+                "showDescription": true,
+                "description": "Total number of patients"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "count(*)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "average-risk-score",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "68b7e352",
+                  "fields": [
+                    {
+                      "name": "avg(risk_score)",
+                      "expression": "AVG(`risk_score`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Average Risk Score",
+                "showDescription": true,
+                "description": "Average predicted readmission risk across all patients"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(risk_score)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 5,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "average-condition",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "68b7e352",
+                  "fields": [
+                    {
+                      "name": "avg(condition_count)",
+                      "expression": "AVG(`condition_count`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Average Condition Count",
+                "showDescription": true,
+                "description": "Average number of diagnosed conditions per patient"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(condition_count)"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 2,
+            "height": 2
           }
         }
       ],
